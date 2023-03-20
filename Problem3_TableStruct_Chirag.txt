@@ -1,0 +1,52 @@
+A) Table1
+Title: Customer
+Fields: ID(Primary Key), Full_Name, Email, DOB, Amount ,Level, Recharge_Type 
+create table Customer 
+(
+Cust_ID Int primary key,
+Full_Name nvarchar(50),
+Email nvarchar(30),
+DOB date ,
+Amount numeric(5,2),
+Level nvarchar(10),
+Recharge_Type navrchar(20)
+)
+
+
+B) Table2
+Title: Commission_Data
+Fields: Comm_ID(Foreign Key), Level ,Commission_Percent , Amount_As_Per_Com
+creat table Commission_Data(
+Comm_ID int,
+Level nvarchar(10),
+Member_Name nvarchar(50),
+Commission_Percent nvarchar(5),
+Amount_As_Per_Com numeric(5,2),
+foreign key (Comm_ID) reffernces Customer(Cust_ID)
+)
+
+
+----------PROCEDURE---------------------
+Create procedure Fetch_Data 
+(
+@Flag nvarchar(2)
+@Cust_ID numeric(5,2),
+)
+as 
+begin 
+if(@Flag = '1')
+begin 
+select B.Member_Name,A.Full_Name,B.Amount_As_Per_Com,Count(B.Level) from Customer as A on 
+innerjoin  Commission_Data as B where A.Cust_ID = B.Comm_ID
+where A.Cust_ID = @Cust_ID
+end
+if(@Flag = '2')
+begin 
+select Full_Name, Level ,
+    Case when Level = 'L0' then Amount*5/100
+	when Level = 'L1' then Amount*3/100
+	when Level = 'L2' then Amount*2/100
+	when Level = 'L3' then Amount*1/100
+	end as Commission_Amount
+	from Customer
+end
